@@ -1,0 +1,7 @@
+keras
+flask
+requests
+numpy
+pillow
+# tensorflow
+# tensorflow-serving-api

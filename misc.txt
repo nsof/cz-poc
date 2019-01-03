@@ -1,0 +1,46 @@
+
+http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2017_11_17.tar.gz
+https://gist.github.com/himanshurawlani/
+
+
+tensorflow_model_server --model_base_path=C:\dev\tf\serving-docker\my_image_classifier --rest_api_port=9000 --model_name=ImageClassifier
+
+
+docker exec -it tender_diffie /bin/bash 
+docker stop tender_diffie
+docker ps
+
+
+
+https://tfhub.dev/google/faster_rcnn/openimages_v4/inception_resnet_v2/1
+http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2017_11_17.tar.gz
+
+
+docker run --name tf_inception_resnet_v2 --rm -p 8500:8500 -p 8501:8501 --mount type=bind,source=C:\dev\tf\models\inception_resnet_v2,target=/models/inception_resnet_v2 -e MODEL_NAME=inception_resnet_v2 -t tensorflow/serving
+
+
+docker run --name tf_faster_rcnn --rm -p 8500:8500 -p 8501:8501 --mount type=bind,source=C:\dev\tf\models\faster_rcnn_inception_resnet_v2_atrous_oid_2018_01_28,target=/models/faster_rcnn_inception_resnet_v2_atrous_oid_2018_01_28 -e MODEL_NAME=faster_rcnn_inception_resnet_v2_atrous_oid_2018_01_28 -t tensorflow/serving
+
+
+docker run --rm --name tf_serving -p 8500:8500 -p 8501:8501 --mount type=bind,source=C:\dev\tf\models\,target=/models/ -v=1 -t tensorflow/serving --model_config_file=/models/models.conf
+
+
+py serving_sample_request.py -m faster_rcnn_inception_resnet_v2_atrous_oid_2018_01_28
+py serving_sample_request.py -m inception_resnet_v2
+
+
+
+Installed the object detection api. https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/
+- download the protopub compiler v3.4
+- go to the research directory in models_master
+- protoc object_detection/protos/*.proto --python_out=.
+- python setup.py build
+- python setup.py install
+
+
+
+flask_sample_request.py -i C:\dev\tf\detection_server\data\posing.jpg
+
+FLASK_APP=flask_server
+FLASK_ENV=development
+flask run --host=0.0.0.0
