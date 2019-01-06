@@ -22,10 +22,12 @@ def predict(pil_image, model_name):
     print (f"sending to: {url}")
     r = requests.post(url, json=payload, timeout=None)
     if r.status_code != 200:
-        print ("error making request")
+        predictions = f"error making request.\n {r.text}"
+        print (predictions)
     else:
-        pred = json.loads(r.content.decode('utf-8'))
-    print (r.text)
+        predictions = json.loads(r.content.decode('utf-8'))
+    
+    return predictions
 
 
 if __name__ == "__main__":
