@@ -33,6 +33,10 @@ def predict():
             byte_stream = io.BytesIO(decoded_image)
             pil_image = Image.open(byte_stream)
             message = "method file b64 encoding"
+        elif flask.request.data != None:
+            pil_image = Image.open(flask.request.data)
+            message = "image in data"
+
 
     # resp = tfw.predict(pil_image, "faster_rcnn_inception_resnet_v2_atrous_oid")
     return flask.render_template("index.html", message=message, title="CZ POC")

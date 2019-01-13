@@ -292,7 +292,18 @@ if (typeof jQuery === 'undefined') {
     }
 
     function sendImageToServer() {
-        alert('click');
+        var $fileTab = $imageupload.find('.file-tab');
+        var $browseFileButton = $fileTab.find('.btn:eq(0)');
+        var $fileInput = $browseFileButton.find('input');
+
+        // Check if file was uploaded.
+        if (!($fileInput[0].files && $fileInput[0].files[0])) {
+            return;
+        }
+
+        var file = $fileInput[0].files[0];
+
+        PredictServer.sendToServer(file);
     }
 
     function showUrlTab($urlTab) {
