@@ -291,6 +291,10 @@ if (typeof jQuery === 'undefined') {
         });
     }
 
+    function displayResults(json) {
+        $("#analysis_results").text(JSON.stringify(json));
+    }
+
     function sendImageToServer() {
         var $fileTab = $imageupload.find('.file-tab');
         var $browseFileButton = $fileTab.find('.btn:eq(0)');
@@ -303,7 +307,7 @@ if (typeof jQuery === 'undefined') {
 
         var file = $fileInput[0].files[0];
 
-        PredictServer.sendToServer(file);
+        PredictServer.sendToServer(file, displayResults);
     }
 
     function showUrlTab($urlTab) {
