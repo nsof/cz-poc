@@ -27,7 +27,7 @@ def predict(pil_image, model_name):
     else:
         predictions = json.loads(r.content.decode('utf-8'))
     
-    return predictions
+    return image, predictions
 
 
 if __name__ == "__main__":

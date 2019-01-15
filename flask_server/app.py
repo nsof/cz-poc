@@ -6,7 +6,7 @@ import datetime
 import os
 import json
 from PIL import Image
-
+import werkzeug.utils
 
 app = flask.Flask(__name__)
 app.jinja_env.auto_reload = True
@@ -24,25 +24,50 @@ def analyze():
 # REST API
 @app.route("/predict", methods=["POST"])
 def predict():
-    message = "no files attached"
     if flask.request.files.get("image"):
-        # read the image in PIL format
         image_bytes = flask.request.files["image"].read()
         byte_stream = io.BytesIO(image_bytes)
-        pil_image = Image.open(byte_stream)
-        message = "method file upload"
     elif flask.request.form and flask.request.form['image_b64']:
         b64_image = flask.request.form['image_b64']
         decoded_image = base64.b64decode(b64_image)
         byte_stream = io.BytesIO(decoded_image)
-        pil_image = Image.open(byte_stream)
-        message = "method file b64 encoding"
 
+    if byte_stream != None:
+        original_image = Image.open(byte_stream)
+        original_image.filename = werkzeug.utils.secure_filename(flask.request.form["imagename"])
 
-    jsonResponse = {
-        "instances": [{"somthing": 5}, {"somthing": 6}]
-    }
-    # resp = tfw.predict(pil_image, "faster_rcnn_inception_resnet_v2_atrous_oid")
+        # ROOT_FOLDER = "flask_server/"
+        # DATA_FOLDER = "data/"
+        # local_image_filename_prefix = datetime.datetime.now().strftime("%Y.%m.%d.%H.%M.%S.%f.")
+        # image_name = local_image_filename_prefix + pil_image.filename
+        # local_image_filepath = os.path.join(ROOT_FOLDER+DATA_FOLDER, image_name)
+        # pil_image.save(local_image_filepath)
+        # analyzed_image, predictions = tfw.predict(pil_image, "faster_rcnn_inception_resnet_v2_atrous_oid")
+        analyzed_image, predictions = original_image.copy(), [{"score": 0.9, "class":"bunny" },{"score": 0.8, "class":"unicorn" }]
+
+        # analyzed_image_name = local_image_filename_prefix + "analyzed." + pil_image.filename
+        # analyzed_image_filepath = os.path.join(ROOT_FOLDER+DATA_FOLDER, analyzed_image_name)
+        # pil_image.save(analyzed_image_filepath)
+        # analyzed_image_url = DATA_FOLDER + analyzed_image_name
+
+        bytesstream = io.BytesIO()
+        original_image.save(bytesstream, format="JPEG")
+        original_image_b64string = (base64.b64encode(bytesstream.getvalue())).decode("utf-8")
+
+        bytesstream.truncate(0)
+        bytesstream.seek(0)
+        analyzed_image.save(bytesstream, format="JPEG")
+        analyzed_image_b64string = (base64.b64encode(bytesstream.getvalue())).decode("utf-8")
+
+        jsonResponse = {
+            "error": False,
+            "predictions": predictions,
+            "original_image": original_image_b64string,
+            "analyzed_image": analyzed_image_b64string
+        }
+    else:
+        jsonResponse = { "error": True }
+
     return json.dumps(jsonResponse)
 
 

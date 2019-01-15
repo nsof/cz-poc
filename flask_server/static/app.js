@@ -1,7 +1,8 @@
 class PredictServer {
-    static async sendToServer (imageData, successCallback) {
+    static async sendToServer (file, successCallback) {
         var formData = new FormData();
-        formData.append("image", new Blob([imageData]));
+        formData.append("image", new Blob([file]));
+        formData.append("imagename", file.name);
         var data = { // Your POST endpoint
             method: 'POST',
             // headers: {

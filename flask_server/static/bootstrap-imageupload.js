@@ -149,6 +149,10 @@ if (typeof jQuery === 'undefined') {
         return '<img src="' + src + '" alt="Image preview" class="thumbnail" style="max-width: ' + options.maxWidth + 'px; max-height: ' + options.maxHeight + 'px">';
     }
 
+    function getB64ImageThumbnailHtml(b64, width, height) {
+        return "<img src='data:image/jpeg;base64," + b64 + "' alt='Image preview' class='thumbnail' style='max-width:" + width + "px; max-height:" + height + "px'/>";
+    }
+
     function getFileExtension(path) {
         return path.substr(path.lastIndexOf('.') + 1).toLowerCase();
     }
@@ -292,7 +296,12 @@ if (typeof jQuery === 'undefined') {
     }
 
     function displayResults(json) {
-        $("#analysis_results").text(JSON.stringify(json));
+        $("#original_image").empty();
+        $("#original_image").prepend(getB64ImageThumbnailHtml(json["original_image"], options.maxWidth, options.maxHeight))
+        $("#analyzed_image").empty();
+        $("#original_image").prepend(getB64ImageThumbnailHtml(json["analyzed_image"], options.maxWidth, options.maxHeight))
+        $("#predictions").empty();
+        $("#predictions").text(JSON.stringify(json["predictions"]));
     }
 
     function sendImageToServer() {
