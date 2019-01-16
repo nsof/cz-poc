@@ -297,10 +297,10 @@ if (typeof jQuery === 'undefined') {
     }
 
     function displayResults(json) {
-        $("#original_image").empty();
-        $("#original_image").prepend(getB64ImageThumbnailHtml(json["original_image"], options.maxWidth, options.maxHeight))
+        // $("#original_image").empty();
+        // $("#original_image").prepend(getB64ImageThumbnailHtml(json["original_image"], options.maxWidth, options.maxHeight))
         $("#analyzed_image").empty();
-        $("#original_image").prepend(getB64ImageThumbnailHtml(json["analyzed_image"], options.maxWidth, options.maxHeight))
+        $("#analyzed_image").prepend(getB64ImageThumbnailHtml(json["analyzed_image"], options.maxWidth, options.maxHeight))
         $("#predictions").empty();
         $("#predictions").text(JSON.stringify(json["predictions"]));
     }

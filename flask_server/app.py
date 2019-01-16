@@ -51,18 +51,17 @@ def predict():
         # analyzed_image_url = DATA_FOLDER + analyzed_image_name
 
         bytesstream = io.BytesIO()
-        original_image.save(bytesstream, format="JPEG")
-        original_image_b64string = (base64.b64encode(bytesstream.getvalue())).decode("utf-8")
-
-        bytesstream.truncate(0)
-        bytesstream.seek(0)
+        # original_image.save(bytesstream, format="JPEG")
+        # original_image_b64string = (base64.b64encode(bytesstream.getvalue())).decode("utf-8")
+        # bytesstream.truncate(0)
+        # bytesstream.seek(0)
         analyzed_image.save(bytesstream, format="JPEG")
         analyzed_image_b64string = (base64.b64encode(bytesstream.getvalue())).decode("utf-8")
 
         jsonResponse = {
             "error": False,
             "predictions": predictions,
-            "original_image": original_image_b64string,
+            # "original_image": original_image_b64string,
             "analyzed_image": analyzed_image_b64string
         }
     else:
