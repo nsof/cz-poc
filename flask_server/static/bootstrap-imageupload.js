@@ -78,7 +78,7 @@ if (typeof jQuery === 'undefined') {
         $urlTabButton.off();
         $submitUrlButton.off();
         $removeUrlButton.off();
-        $(".analyze1, .analyze2").off();
+        $(".analyze").off();
 
         $fileTabButton.on('click', function() {
             $(this).blur();
@@ -110,7 +110,7 @@ if (typeof jQuery === 'undefined') {
             resetUrlTab($urlTab);
         });
 
-        $(".analyze1, .analyze2").on('click', function () {
+        $(".analyze").on('click', function () {
             $(this).blur();
             sendImageToServer();
         });
@@ -243,6 +243,7 @@ if (typeof jQuery === 'undefined') {
         $fileTab.find('.btn span').text('Browse');
         $fileTab.find('.btn:eq(1)').hide();
         $fileTab.find('input').val('');
+        $fileTab.find('.analyze').hide();
     }
 
     function submitImageFile($fileTab) {
@@ -255,7 +256,7 @@ if (typeof jQuery === 'undefined') {
         $fileTab.find('img').remove();
         $browseFileButton.find('span').text('Browse');
         $removeFileButton.hide();
-        $(".analyze1").hide();
+        $analyzeButton.hide();
 
         // Check if file was uploaded.
         if (!($fileInput[0].files && $fileInput[0].files[0])) {
@@ -275,7 +276,7 @@ if (typeof jQuery === 'undefined') {
                     $fileTab.prepend(getImageThumbnailHtml(e.target.result));
                     $browseFileButton.find('span').text('Change');
                     $removeFileButton.css('display', 'inline-block');
-                    $(".analyze1").css('display', 'inline-block');
+                    $(".analyze").css('display', 'inline-block');
                 };
 
                 fileReader.onerror = function() {
@@ -352,7 +353,6 @@ if (typeof jQuery === 'undefined') {
         $urlTab.find('.alert').remove();
         $urlTab.find('img').remove();
         $removeUrlButton.hide();
-        $(".analyze2").hide();
 
         var url = $urlInput.val();
         if (!url) {
@@ -371,7 +371,6 @@ if (typeof jQuery === 'undefined') {
                 // Show thumbnail and remove button.
                 $(getImageThumbnailHtml(url)).insertAfter($submitUrlButton.closest('.input-group'));
                 $removeUrlButton.css('display', 'inline-block');
-                $(".analyze2").css('display', 'inline-block');
             }
             else {
                 $urlTab.prepend(getAlertHtml(message));
