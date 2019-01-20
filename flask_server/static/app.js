@@ -1,5 +1,5 @@
 class PredictServer {
-    static async sendToServer (file, successCallback) {
+    static async sendToServer (file, completionCallback) {
         var formData = new FormData();
         formData.append("image", new Blob([file]));
         formData.append("imagename", file.name);
@@ -17,12 +17,18 @@ class PredictServer {
             if (response.ok) {
                 var json = await response.json();
                 console.log(json);
-                successCallback(json)
+                if (json["error"] == false) {
+                    completionCallback(json, true)
+                } else {
+                    completionCallback(json, false)
+                }
             } else {
                 console.error(response.status);
+                completionCallback(json, false)
             }
         } catch(err) {
             console.error(err);
+            completionCallback(json, false)
         }
     }
 };

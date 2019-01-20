@@ -296,13 +296,19 @@ if (typeof jQuery === 'undefined') {
         });
     }
 
-    function displayResults(json) {
-        // $("#original_image").empty();
-        // $("#original_image").prepend(getB64ImageThumbnailHtml(json["original_image"], options.maxWidth, options.maxHeight))
+    function displayResults(json, success) {
         $("#analyzed_image").empty();
-        $("#analyzed_image").prepend(getB64ImageThumbnailHtml(json["analyzed_image"], options.maxWidth, options.maxHeight))
         $("#predictions").empty();
-        $("#predictions").text(JSON.stringify(json["predictions"]));
+        if (success == true) {
+            // $("#original_image").empty();
+            // $("#original_image").prepend(getB64ImageThumbnailHtml(json["original_image"], options.maxWidth, options.maxHeight))
+            $("#analyzed_image").prepend(getB64ImageThumbnailHtml(json["analyzed_image"], options.maxWidth, options.maxHeight))
+            $("#predictions").text(JSON.stringify(json["predictions"]));
+        } else {
+            $("#predictions").text("error analyzing image");
+            $("#analyzed_image").hide();
+        }
+
     }
 
     function sendImageToServer() {
