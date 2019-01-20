@@ -7,7 +7,7 @@ import requests
 # from keras.applications import inception_v3
 from keras.preprocessing import image
 
-def predict(image_path, model_name):
+def predict(host_name, image_path, model_name):
     # Preprocessing our input image
     img = image.img_to_array(image.load_img(image_path, target_size=(224, 224))) / 255.
     # this line is added because of a bug in tf_serving(1.10.0-dev)
@@ -24,7 +24,7 @@ def predict(image_path, model_name):
         }
 
     # sending post request to TensorFlow Serving server
-    url = f"http://localhost:8501/v1/models/{model_name}:predict"
+    url = f"http://{host_name}:8501/v1/models/{model_name}:predict"
     print (f"sending to: {url}")
     r = requests.post(url, json=payload, timeout=None)
     if r.status_code != 200:
@@ -42,9 +42,11 @@ def predict(image_path, model_name):
 if __name__ == "__main__":
     # Argument parser for giving input image_path from command line
     ap = argparse.ArgumentParser()
+    ap.add_argument("-H", "--Host", required=False, help="host name", default="localhost")
     ap.add_argument("-i", "--image", required=False, help="path of the image", default=r"C:\dev\tf\tf\data\posing.jpg")
     ap.add_argument("-m", "--model", required=False, help="model name", default="faster_rcnn_inception_resnet_v2_atrous_oid")
     args = vars(ap.parse_args())
     image_path = args['image']
     model_name = args['model']
-    predict(image_path, model_name)
+    host_name = args['Host']
+    predict(host_name, image_path, model_name)
