@@ -1,12 +1,12 @@
 import io
 import flask
 import base64
-import tf_wrapper as tfw
 import datetime
 import os
 import json
 from PIL import Image
 import werkzeug.utils
+import tf_wrapper as tfw
 
 app = flask.Flask(__name__)
 app.jinja_env.auto_reload = True
@@ -42,28 +42,31 @@ def predict():
         # image_name = local_image_filename_prefix + pil_image.filename
         # local_image_filepath = os.path.join(ROOT_FOLDER+DATA_FOLDER, image_name)
         # pil_image.save(local_image_filepath)
-        # analyzed_image, predictions = tfw.predict(pil_image, "faster_rcnn_inception_resnet_v2_atrous_oid")
-        analyzed_image, predictions = original_image.copy(), [{"score": 0.9, "class":"bunny" },{"score": 0.8, "class":"unicorn" }]
+        analyzed_image, predictions = tfw.predict(original_image, "faster_rcnn_inception_resnet_v2_atrous_oid")
+        if analyzed_image == None or predictions == None:
+            jsonResponse = { "error": True }
+        else:
+            # analyzed_image, predictions = original_image.copy(), [{"score": 0.9, "class":"bunny" },{"score": 0.8, "class":"unicorn" }]
 
-        # analyzed_image_name = local_image_filename_prefix + "analyzed." + pil_image.filename
-        # analyzed_image_filepath = os.path.join(ROOT_FOLDER+DATA_FOLDER, analyzed_image_name)
-        # pil_image.save(analyzed_image_filepath)
-        # analyzed_image_url = DATA_FOLDER + analyzed_image_name
+            # analyzed_image_name = local_image_filename_prefix + "analyzed." + pil_image.filename
+            # analyzed_image_filepath = os.path.join(ROOT_FOLDER+DATA_FOLDER, analyzed_image_name)
+            # pil_image.save(analyzed_image_filepath)
+            # analyzed_image_url = DATA_FOLDER + analyzed_image_name
 
-        bytesstream = io.BytesIO()
-        # original_image.save(bytesstream, format="JPEG")
-        # original_image_b64string = (base64.b64encode(bytesstream.getvalue())).decode("utf-8")
-        # bytesstream.truncate(0)
-        # bytesstream.seek(0)
-        analyzed_image.save(bytesstream, format="JPEG")
-        analyzed_image_b64string = (base64.b64encode(bytesstream.getvalue())).decode("utf-8")
+            bytesstream = io.BytesIO()
+            # original_image.save(bytesstream, format="JPEG")
+            # original_image_b64string = (base64.b64encode(bytesstream.getvalue())).decode("utf-8")
+            # bytesstream.truncate(0)
+            # bytesstream.seek(0)
+            analyzed_image.save(bytesstream, format="JPEG")
+            analyzed_image_b64string = (base64.b64encode(bytesstream.getvalue())).decode("utf-8")
 
-        jsonResponse = {
-            "error": False,
-            "predictions": predictions,
-            # "original_image": original_image_b64string,
-            "analyzed_image": analyzed_image_b64string
-        }
+            jsonResponse = {
+                "error": False,
+                "predictions": predictions,
+                # "original_image": original_image_b64string,
+                "analyzed_image": analyzed_image_b64string
+            }
     else:
         jsonResponse = { "error": True }
 

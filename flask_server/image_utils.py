@@ -48,10 +48,7 @@ class ImageUtils:
         else:
             resized_image_rgb = resized_image
 
-        image_bytes_stream = io.BytesIO()
-        resized_image_rgb.save(image_bytes_stream, format='JPEG')
-        image_bytes = image_bytes_stream.getvalue()
-        return image_bytes
+        return resized_image_rgb
 
     @staticmethod
     def _get_font_based_on_image_size(image):
@@ -112,14 +109,13 @@ class ImageUtils:
 import pathlib
 
 def test_utils():
-    image_url = pathlib.Path(pathlib.Path(__file__).parent, "data/yard.jpg").as_uri()
+    image_url = pathlib.Path(pathlib.Path(__file__).parent, r"C:\dev\tf\tf\data\posing.jpg").as_uri()
     if isinstance(image_url, ("".__class__, u"".__class__)):
         image = ImageUtils.get_image(image_url)
 
     ImageUtils.display_image(image)
 
-    image_bytes = ImageUtils.prepare_image(image, 640, 480)
-    resized_image = Image.open(io.BytesIO(image_bytes))
+    resized_image = ImageUtils.prepare_image(image, 640, 480)
     ImageUtils.display_image(resized_image)
 
     results = [{"class": "TEST_CLASS", "score": 0.88, "box": [0.2, 0.2, 0.8, 0.8]}]

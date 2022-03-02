@@ -1,0 +1,8 @@
+{
+  "DEFAULT": {
+    "HOST": "localhost"
+  },
+  "REMOTE": {
+    "HOST": "127.0.0.1"
+  }
+}

@@ -12,7 +12,10 @@ Installed the object detection api. https://github.com/tensorflow/models/blob/ma
 - python setup.py build
 - python setup.py install
 
-tensorflow_model_server --model_base_path=C:\dev\tf\serving-docker\my_image_classifier --rest_api_port=9000 --model_name=ImageClassifier
+tensorflow_model_server --rest_api_port=8501 --model_base_path=C:\dev\tf\models\faster_rcnn_inception_resnet_v2_atrous_oid --model_name=faster_rcnn_inception_resnet_v2_atrous_oid
+tensorflow_model_server --rest_api_port=8501 --model_base_path=models/faster_rcnn_inception_resnet_v2_atrous_oid --model_name=faster_rcnn_inception_resnet_v2_atrous_oid
+
+TF_CPP_MIN_VLOG_LEVEL=1
 
 DOCKER STUFF
 ------------------
@@ -22,6 +25,7 @@ docker ps
 docker run --name tf_inception_resnet_v2 --rm -p 8500:8500 -p 8501:8501 --mount type=bind,source=C:\dev\tf\models\inception_resnet_v2,target=/models/inception_resnet_v2 -e MODEL_NAME=inception_resnet_v2 -t tensorflow/serving
 docker run --name tf_faster_rcnn --rm -p 8500:8500 -p 8501:8501 --mount type=bind,source=C:\dev\tf\models\faster_rcnn_inception_resnet_v2_atrous_oid_2018_01_28,target=/models/faster_rcnn_inception_resnet_v2_atrous_oid_2018_01_28 -e MODEL_NAME=faster_rcnn_inception_resnet_v2_atrous_oid_2018_01_28 -t tensorflow/serving
 docker run --rm --name tf_serving -p 8500:8500 -p 8501:8501 --mount type=bind,source=C:\dev\tf\models\,target=/models/ -v=1 -t tensorflow/serving --model_config_file=/models/models.conf
+docker run --rm --name tf_serving -p 8501:8501 -e TF_CPP_MIN_VLOG_LEVEL=1 --mount type=bind,source=C:\dev\tf\models\,target=/models/ -t tensorflow/serving --model_config_file=/models/models2.conf --v=1
 
 
 TESTING SERVING SETUP
@@ -42,3 +46,19 @@ flask run --host=0.0.0.0 --port=5000 --reload
 
 
 flask_sample_request.py -i C:\dev\tf\detection_server\data\posing.jpg
+
+CREATE GOOGLE CLOUD CONATINER INSTANCE
+docker.io/tensorflow/serving:latest
+ssh-keygen -t rsa -f c:\Users\david\.ssh\keyfile -C tenne_david
+(follow instructions here: https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys#instance-only)
+ssh -i c:\Users\david\.ssh\keyfile tenne_david@35.231.97.181
+scp -r -i c:\Users\david\.ssh\keyfile models\faster_rcnn_inception_resnet_v2_atrous_oid tenne_david@35.231.97.181:~/models/faster_rcnn_inception_resnet_v2_atrous_oid
+open the ports on the instance
+sudo iptables -w -A INPUT -p tcp --dport 8501 -j ACCEPT
+
+
+docker run --rm --name tf_serving -p 8501:8501 --mount type=bind,source=/home/tenne_david/models/,target=/models/ -v=1 -t tensorflow/serving --model_config_file=/models/models.conf
+
+py serving_sample_request.py -H 35.231.97.181 -m faster_rcnn_inception_resnet_v2_atrous_oid -i C:\dev\tf\tf\data\test1.jpg
+
+

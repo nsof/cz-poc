@@ -9,10 +9,11 @@ from keras.preprocessing import image
 
 def predict(host_name, image_path, model_name):
     # Preprocessing our input image
-    img = image.img_to_array(image.load_img(image_path, target_size=(224, 224))) / 255.
+    img = image.img_to_array(image.load_img(image_path, target_size=(224, 224)))
     # this line is added because of a bug in tf_serving(1.10.0-dev)
 
     if model_name == "inception_resnet_v2":
+        img = img / 255.
         img = img.astype('float16')
         payload = {
             "instances": [{'input_image': img.tolist()}],
